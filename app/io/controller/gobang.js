@@ -165,6 +165,8 @@ class GobangController extends Controller {
         };
         let opponent = black ? gameInfo.creator : gameInfo.joiner;
         if (flag > 0) {
+            playingGames.delete(game);
+            userdata.game = opponent.userdata.game = undefined;
             socket.leave(game);
             opponent.leave(game);
             res.winner = userdata.username;
