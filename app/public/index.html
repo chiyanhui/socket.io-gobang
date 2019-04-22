@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>五子棋</title>
+        <link rel="stylesheet" href="style/main.css">
+    </head>
+    <body>
+        <ul class="pages">
+            <li class="hall page">
+                <div class="games">
+                    <!-- <div class="game-item create">+</div>
+                    <div class="game-item"><h4>game#1001</h4><p>创建者: jack</p><span class="cancel">取消</span></div>
+                    <div class="game-item"><h4>game#1001</h4><p>创建者: jack</p><span class="join">加入</span></div>
+                    <div class="game-item"><h4>game#1001</h4><p>创建者: jack</p><span class="join">加入</span></div> -->
+                </div>
+            </li>
+            <li class="game page">
+                <canvas id="canvas" width="450" height="450"></canvas>
+            </li>
+            <li class="login page">
+                <div class="form">
+                    <h3 class="title">What's your nickname?</h3>
+                    <input class="usernameInput" type="text" maxlength="14" />
+                </div>
+            </li>
+        </ul>
+        <div class="mask"><span class="loading"></span></div>
+        <div class="reconnect" style="display: none;">
+            <div class="reconnect-info">连接断开</div>
+            <span class="reconnect-btn">重新连接</span>
+        </div>
+        <script src="lib/socket.io.js"></script>
+        <script src="lib/jquery-3.4.0.min.js"></script>
+        <script src="script/main.js"></script>
+        <script src="script/game.js"></script>
+    </body>
+</html>

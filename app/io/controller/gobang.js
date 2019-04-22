@@ -33,7 +33,9 @@ class GobangController extends Controller {
         const { ctx } = this;
         const { socket } = ctx;
         const { userdata } = socket;
+        let callback = ctx.args[0] || (()=>{});
         if (!userdata || userdata.game) {
+            callback({ success: false });
             return;
         }
         let game = 'game#' + gameId;
@@ -45,23 +47,29 @@ class GobangController extends Controller {
         userdata.game = game;
         const res = {
             username: userdata.username,
+            creator: userdata.username,
             game,
         };
         socket.to('hall').emit('new game add', res);
-        if (typeof ctx.args[0] === 'function') {
-            ctx.args[0](res);
-        }
+        callback({
+            success: true,
+            ...res,
+        });
     }
 
     async joinGame() {
         const { ctx } = this;
         const { socket } = ctx;
         const { userdata } = socket;
+        let callback = ctx.args[1] || (()=>{});
         if (!userdata || userdata.game) {
+            callback({
+                success: false,
+                msg: '当前状态不能加入游戏',
+            });
             return;
         }
         let game = ctx.args[0];
-        let callback = ctx.args[1] || (()=>{});
         if (waitingGames.has(game)) {
             let gameInfo = waitingGames.get(game);
             waitingGames.delete(game);
@@ -77,6 +85,8 @@ class GobangController extends Controller {
             userdata.game = game;
             socket.to(game).emit('enter game', {
                 username: userdata.username,
+                creator: gameInfo.creator.userdata.username,
+                joiner: userdata.username,
                 game,
             });
             callback({
@@ -97,11 +107,12 @@ class GobangController extends Controller {
         const { ctx } = this;
         const { socket } = ctx;
         const { userdata } = socket;
+        let callback = ctx.args[0] || (()=>{});
         if (!userdata || !waitingGames.has(userdata.game)) {
+            callback({ success: false });
             return;
         }
         const game = userdata.game;
-        let callback = ctx.args[0] || (()=>{});
         waitingGames.delete(game);
         socket.to('hall').emit('remove game', {
             game,
@@ -122,6 +133,7 @@ class GobangController extends Controller {
         for (let [game, info] of waitingGames) {
             games.push({
                 game,
+                creator: info.creator.userdata.username,
                 username: info.creator.userdata.username,
             });
         }
@@ -178,11 +190,12 @@ class GobangController extends Controller {
         const { ctx, nsp } = this;
         const { socket } = ctx;
         const { userdata } = socket;
+        let callback = ctx.args[0] || (()=>{});
         if (!userdata || !playingGames.has(userdata.game)) {
+            callback({ success: false });
             return;
         }
         const game = userdata.game;
-        let callback = ctx.args[0] || (()=>{});
         let gameInfo = playingGames.get(game);
         playingGames.delete(game);
         let opponent = gameInfo.creator === socket ? gameInfo.joiner : gameInfo.creator;
@@ -194,7 +207,10 @@ class GobangController extends Controller {
             loser: userdata.username,
             reason: 'surrender',
         };
-        callback(res);
+        callback({
+            ...res,
+            success: true,
+        });
         opponent.emit('win', res);
         nsp.to('hall').emit('game result', res);
     }
