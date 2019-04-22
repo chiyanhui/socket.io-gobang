@@ -74,6 +74,11 @@ function init() {
     socket.on('enter game', (res) => {
         enterGame(res, false);
     });
+    socket.on('step', (res) => {
+        let {i, j, black} = res.step;
+        chessBoard.step(i, j, black);
+        chessBoard.black = !black;
+    });
     
     socket.on('win', winHandler);
     socket.on('lose', loseHandler);
@@ -101,6 +106,7 @@ function toHall() {
     $games.empty();
     $('.page').hide();
     $('.hall').show();
+    $('.notification').css('right', '-400px');
     socket.emit('get games', function(games) {
         page = 'hall';
         $games.append('<div class="game-item create">+</div>');
@@ -115,6 +121,7 @@ function toHall() {
         }
     });
 }
+$('.toHall').click(toHall);
 
 function createGame() {
     socket.emit('create game', (res) => {
@@ -152,9 +159,28 @@ $games.on('click', '.join', function(e) {
     });
 });
 
+var chessBoard;
+canvas.onclick = function(e) {
+    if (chessBoard.over) {
+        return;
+    }
+    var i = Math.floor(e.offsetX / 30);
+    var j = Math.floor(e.offsetY / 30);
+    var black = chessBoard.black;
+    if (chessBoard.iAmBlack === black && 0 <= i && i < 15 && 0 <= j && j < 15 && chessBoard.check(i, j) === 0) {
+        chessBoard.step(i, j, black);
+        chessBoard.black = !black;
+        socket.emit('step', i, j);
+    }
+}
+
 function enterGame(res, black) {
     page = 'game';
     console.log(`进入${res.game}, ${res.creator} VS ${res.joiner}, 你执${black?'黑':'白'}`);
+    chessBoard = new ChessBoard();
+    chessBoard.black = true;
+    chessBoard.iAmBlack = black;
+    chessBoard.over = false;
     $('.hall').hide();
     $('.game').show();
 }
@@ -169,10 +195,12 @@ function winHandler(res) {
     } else {
         msg = `恭喜你战胜${res.loser}`;
     }
-    console.log(msg);
+    notify(msg);
 }
 function loseHandler(res) {
     let msg;
+    let {i, j, black} = res.step;
+    chessBoard.step(i, j, black);
     if (res.reason === 'surrender') {
         msg = `你认输了, ${res.winner}获胜`;
     } else if (res.reason === 'white win') {
@@ -182,5 +210,10 @@ function loseHandler(res) {
     } else {
         msg = '你输了!';
     }
-    console.log(msg);
+    notify(msg);
+}
+
+function notify(msg) {
+    $('.notification-info').text(msg);
+    $('.notification').animate({right: '30px'}, 500);
 }

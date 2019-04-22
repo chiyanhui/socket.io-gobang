@@ -192,3 +192,33 @@ ul {
 .game-item .cancel {
     background: #f5222d;
 }
+
+/* notification */
+.notification {
+    position: fixed;
+    width: 380px;
+    height: 105px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    /* right: 30px; */
+    right: -400px;
+    top: 30px;
+    background: #fff;
+}
+.notification-info {
+    margin: 20px 30px 0;
+}
+.toHall {
+    position: absolute;
+    bottom: 10px;
+    right: 30px;
+    width: 80px;
+    font-size: 15px;
+    height: 30px;
+    line-height: 30px;
+    background: rgb(10, 140, 247);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
