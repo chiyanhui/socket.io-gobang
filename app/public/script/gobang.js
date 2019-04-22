@@ -21,11 +21,18 @@ function drawLine() {
 }
 drawLine();
 
-function oneStep(i, j, black) {
+function oneStep(i, j, black, focus) {
+    if (focus) {
+        ctx.beginPath();
+        ctx.arc(15+i*30, 15+j*30, 14, 0, 2*Math.PI);
+        ctx.closePath();
+        ctx.strokeStyle = "#f00";
+        ctx.stroke();
+    }
     ctx.beginPath();
     ctx.arc(15+i*30, 15+j*30, 13, 0, 2*Math.PI);
     ctx.closePath();
-    var gradient = ctx.createRadialGradient(15+i*30+2, 15+j*30-2, 15, 15+i*30, 15+j*30, 0);
+    var gradient = ctx.createRadialGradient(15+i*30, 15+j*30, 15, 15+i*30, 15+j*30, 0);
     if(black){
         gradient.addColorStop(0, "#0a0a0a");
         gradient.addColorStop(1, "#636766");
@@ -42,7 +49,9 @@ class ChessBoard {
         this.arr = new Uint32Array(15);
     }
     init(arr) {
-        this.arr = arr;
+        if (arr) {
+            this.arr = arr;
+        }
         var flag;
         drawLine();
         for (var i = 0; i < 15; i++) {
@@ -154,7 +163,8 @@ canvas.onclick = function(e) {
     var i = Math.floor(e.offsetX / 30);
     var j = Math.floor(e.offsetY / 30);
     if (0 <= i && i < 15 && 0 <= j && j < 15 && chessBoard.check(i, j) === 0) {
-        oneStep(i, j, black);
+        chessBoard.init();
+        oneStep(i, j, black, true);
         chessBoard.step(i, j, black);
         black = !black;
         var flag = chessBoard.judge(i, j);
