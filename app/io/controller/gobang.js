@@ -174,18 +174,12 @@ class GobangController extends Controller {
             res.winner = userdata.username;
             res.loser = opponent.userdata.username;
             res.reason = black ? 'black win' : 'white win';
-            callback({
-                ...res,
-                success: true,
-            });
+            callback(Object.assign({ success: true }, res));
             socket.emit('win', res);
             opponent.emit('lose', res);
             nsp.to('hall').emit('game result', res);
         } else {
-            callback({
-                ...res,
-                success: true,
-            });
+            callback(Object.assign({ success: true }, res));
             opponent.emit('step', res);
         }
     }
@@ -211,10 +205,7 @@ class GobangController extends Controller {
             loser: userdata.username,
             reason: 'surrender',
         };
-        callback({
-            ...res,
-            success: true,
-        });
+        callback(Object.assign({ success: true }, res));
         opponent.emit('win', res);
         nsp.to('hall').emit('game result', res);
     }
