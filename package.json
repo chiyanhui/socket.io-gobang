@@ -6,8 +6,7 @@
   "dependencies": {
     "egg": "^2.15.1",
     "egg-scripts": "^2.11.0",
-    "egg-socket.io": "^4.1.5",
-    "socket.io": "^2.1.1"
+    "egg-socket.io": "^4.1.5"
   },
   "devDependencies": {
     "egg-bin": "^4.11.0"
