@@ -53,7 +53,9 @@ class GobangController extends Controller {
         socket.to('hall').emit('new game add', res);
         callback({
             success: true,
-            ...res,
+            username: userdata.username,
+            creator: userdata.username,
+            game,
         });
     }
 
