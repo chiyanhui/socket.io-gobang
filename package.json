@@ -1,7 +1,7 @@
 {
-  "name": "socket.io 五子棋",
+  "name": "socket.io-gobang",
   "version": "1.0.0",
-  "description": "",
+  "description": "socket.io 五子棋",
   "private": true,
   "dependencies": {
     "egg": "^2.15.1",
