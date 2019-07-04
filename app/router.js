@@ -1,6 +1,6 @@
 module.exports = app => {
   const { router, controller, io } = app;
-  router.get('/', controller.home.index);
+  router.redirect('/', '/public/index.html', 302);
 
   io.of('/').route('index', io.controller.home.index);
   io.of('/').route('repeat', io.controller.home.repeat);
