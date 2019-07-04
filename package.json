@@ -1,11 +1,8 @@
 {
-  "name": "demo1",
+  "name": "socket.io 五子棋",
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "egg": {
-    "declarations": true
-  },
   "dependencies": {
     "egg": "^2.15.1",
     "egg-scripts": "^2.11.0",
